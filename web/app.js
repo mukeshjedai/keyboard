@@ -9,19 +9,24 @@
   ];
   var shifted = {'1':'!','2':'@','3':'#','4':'$','5':'%','6':'^','7':'&','8':'*','9':'(','0':')','-':'_','=':'+','[':'{',']':'}','\\':'|',';':':',"'":'"',',':'<','.':'>','/':'?'};
   var state = { shift:false, caps:false, ctrl:false, alt:false, meta:false };
-  var params = new URLSearchParams(location.search);
-  var credentials = params.get('device') && params.get('secret') ? {device:params.get('device'),secret:params.get('secret')} : null;
+  var credentials = null;
   var keyboard = document.getElementById('keyboard');
   var status = document.getElementById('status');
   var signal = document.getElementById('signal');
-  if(credentials) {
-    localStorage.setItem('remoteKeyboardPairing',JSON.stringify(credentials));
-    history.replaceState(null,'',location.pathname);
-  } else {
-    try { credentials=JSON.parse(localStorage.getItem('remoteKeyboardPairing')); } catch (_) { credentials=null; }
-  }
+  try { credentials=JSON.parse(localStorage.getItem('remoteKeyboardPairing')); } catch (_) { credentials=null; }
   if(!credentials||!credentials.device||!credentials.secret) document.getElementById('pairing').hidden=false;
   else { signal.className='signal online'; status.textContent='Paired with Windows'; }
+  document.getElementById('pairing-form').addEventListener('submit',function(event){
+    event.preventDefault();
+    var code=document.getElementById('pairing-code').value.replace(/\D/g,'');
+    var error=document.getElementById('pairing-error');
+    if(code.length!==6){error.textContent='Enter all six digits.';return;}
+    error.textContent='Connecting…';
+    fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code})})
+      .then(function(response){if(!response.ok)return response.json().then(function(data){throw new Error(data.error||'Could not pair');});return response.json();})
+      .then(function(data){credentials=data;localStorage.setItem('remoteKeyboardPairing',JSON.stringify(data));document.getElementById('pairing').hidden=true;signal.className='signal online';status.textContent='Paired with Windows';})
+      .catch(function(err){error.textContent=err.message;});
+  });
   function send(type,value) {
     if(!credentials) return;
     fetch('/api/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({device:credentials.device,secret:credentials.secret,command:{type:type,value:value}})})

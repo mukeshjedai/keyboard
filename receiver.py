@@ -1,6 +1,6 @@
 """Remote Keyboard Windows receiver for the hosted Vercel site."""
 from __future__ import annotations
-import ctypes, json, secrets, struct, sys, time, urllib.error, urllib.parse, urllib.request, webbrowser
+import ctypes, json, secrets, struct, sys, time, urllib.error, urllib.parse, urllib.request
 from pathlib import Path
 
 CONFIG_PATH = Path(__file__).resolve().parent / "remote-keyboard.json"
@@ -37,8 +37,10 @@ def setup():
     CONFIG_PATH.write_text(json.dumps(config,indent=2),encoding="utf-8")
     return config
 
-def pairing_url(config):
-    return config["site"]+"/?"+urllib.parse.urlencode({"device":config["device"],"secret":config["secret"]})
+def register(config, code):
+    data=json.dumps({"code":code,"device":config["device"],"secret":config["secret"]}).encode()
+    request=urllib.request.Request(config["site"]+"/api/register",data=data,headers={"Content-Type":"application/json","User-Agent":"RemoteKeyboard-Windows/3.0"})
+    with urllib.request.urlopen(request,timeout=15) as response: return response.status==200
 
 def poll(config):
     query=urllib.parse.urlencode({"device":config["device"],"secret":config["secret"]})
@@ -49,9 +51,11 @@ def poll(config):
 def main():
     if sys.platform!="win32": raise SystemExit("This receiver must be run on Windows.")
     config=json.loads(CONFIG_PATH.read_text(encoding="utf-8")) if CONFIG_PATH.exists() else setup()
-    url=pairing_url(config)
-    print("\nRemote Keyboard is ready\nOpen this private pairing link on your iPad:\n"+url+"\n\nKeep this window open. Press Ctrl+C to stop.")
-    webbrowser.open(url); failures=0
+    code=f"{secrets.randbelow(1000000):06d}"
+    try: register(config,code)
+    except urllib.error.URLError as exc: raise SystemExit("Could not reach website: "+str(exc))
+    print("\nRemote Keyboard is ready\nOpen this website on your iPad:\n"+config["site"]+"\n\nPAIRING CODE: "+code+"\nThe code expires in 10 minutes.\n\nKeep this window open. Press Ctrl+C to stop.")
+    failures=0
     try:
         while True:
             try:

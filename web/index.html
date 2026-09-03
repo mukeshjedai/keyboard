@@ -25,8 +25,13 @@
     <div class="pairing-card">
       <span class="eyebrow">PRIVATE CONNECTION</span>
       <h1>Pair this iPad</h1>
-      <p>Start the Windows receiver, then open the private link it displays.</p>
-      <p class="pairing-note">The link contains your pairing key. Don’t share it.</p>
+      <p>Enter the six-digit code shown by the Windows receiver.</p>
+      <form id="pairing-form">
+        <input id="pairing-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" placeholder="000000" aria-label="Pairing code">
+        <button type="submit">Connect</button>
+      </form>
+      <p class="pairing-error" id="pairing-error" aria-live="polite"></p>
+      <p class="pairing-note">The code expires after 10 minutes and works once.</p>
     </div>
   </section>
   <script src="app.js"></script>
