@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#101114">
+  <title>Remote Keyboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="brand"><span class="signal" id="signal"></span><span>Remote Keyboard</span></div>
+      <div class="status" id="status">Connecting…</div>
+    </header>
+    <section class="keyboard" id="keyboard" aria-label="Remote keyboard"></section>
+    <footer>
+      <span id="hint">Tap any key to type on your Windows computer</span>
+      <button id="fullscreen" type="button">Full screen</button>
+    </footer>
+  </main>
+  <section class="pairing" id="pairing" hidden>
+    <div class="pairing-card">
+      <span class="eyebrow">PRIVATE CONNECTION</span>
+      <h1>Pair this iPad</h1>
+      <p>Start the Windows receiver, then open the private link it displays.</p>
+      <p class="pairing-note">The link contains your pairing key. Don’t share it.</p>
+    </div>
+  </section>
+  <script src="app.js"></script>
+</body>
+</html>
