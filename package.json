@@ -1,1 +1,1 @@
-{"name":"remote-keyboard","version":"2.0.0","private":true,"type":"module","scripts":{"build":"node -e \"console.log('Static site ready')\""}}
+{"name":"remote-keyboard","version":"2.0.0","private":true,"type":"module","scripts":{"build":"node build.mjs"}}

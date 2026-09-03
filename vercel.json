@@ -1,5 +1,5 @@
 {
-  "$schema":"https://openapi.vercel.sh/vercel.json","cleanUrls":true,"trailingSlash":false,
+  "$schema":"https://openapi.vercel.sh/vercel.json","cleanUrls":true,"trailingSlash":false,"outputDirectory":"public",
   "headers":[{"source":"/(.*)","headers":[{"key":"X-Content-Type-Options","value":"nosniff"},{"key":"Referrer-Policy","value":"no-referrer"},{"key":"Permissions-Policy","value":"camera=(), microphone=(), geolocation=()"}]}],
-  "rewrites":[{"source":"/","destination":"/web/index.html"},{"source":"/style.css","destination":"/web/style.css"},{"source":"/app.js","destination":"/web/app.js"}]
+  "rewrites":[{"source":"/","destination":"/index.html"}]
 }
